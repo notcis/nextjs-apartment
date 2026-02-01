@@ -1,0 +1,16 @@
+app/
+├── (auth)/             # Route สำหรับ Login/Better Auth
+├── (dashboard)/        # ส่วนจัดการระบบ (Protected)
+│   ├── layout.tsx      # Sidebar, Navbar
+│   ├── page.tsx        # Dashboard สรุปภาพรวม
+│   ├── rooms/          # จัดการห้องพัก
+│   ├── tenants/        # จัดการผู้เช่า
+│   ├── contracts/      # จัดการสัญญา
+│   ├── utilities/      # **Feature Highlight: จดมิเตอร์**
+│   │   └── page.tsx    # ตารางกรอกเลขมิเตอร์แบบ Bulk
+│   ├── invoices/       # จัดการบิล
+│   │   ├── generate/   # หน้ากดสร้างบิลประจำเดือน
+│   │   └── [id]/       # ดูรายละเอียดบิล
+│   └── reports/        # รายงานสรุป
+├── layout.tsx
+└── global.css

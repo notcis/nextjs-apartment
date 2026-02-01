@@ -1,0 +1,184 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  role          Role      @default(STAFF) // ADMIN , MANAGER, STAFF
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  STAFF
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+// 2. Organization Structure
+model Branch {
+  id        Int     @id @default(autoincrement())
+  name      String
+  address   String?
+  waterRate Decimal // ค่าน้ำต่อหน่วย
+  elecRate  Decimal // ค่าไฟต่อหน่วย
+  rooms     Room[]
+}
+
+model Room {
+  id        Int            @id @default(autoincrement())
+  number    String // เลขห้อง (เช่น 101, A202)
+  floor     Int
+  price     Decimal // ค่าเช่าพื้นฐาน
+  status    RoomStatus     @default(VACANT) // VACANT, OCCUPIED, MAINTENANCE
+  branchId  Int
+  branch    Branch         @relation(fields: [branchId], references: [id])
+  contracts Contract[]
+  meters    MeterReading[]
+}
+
+enum RoomStatus {
+  VACANT
+  OCCUPIED
+  MAINTENANCE
+}
+
+// 3. People & Contracts
+model Tenant {
+  id        Int        @id @default(autoincrement())
+  firstName String
+  lastName  String
+  idCard    String     @unique // เลขบัตร ปชช.
+  phone     String
+  lineId    String?
+  contracts Contract[]
+}
+
+model Contract {
+  id        String    @id @default(cuid())
+  tenantId  Int
+  roomId    Int
+  startDate DateTime
+  endDate   DateTime? // null = สัญญาไม่กำหนดระยะเวลา
+  deposit   Decimal // เงินมัดจำ
+  isActive  Boolean   @default(true)
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  room      Room      @relation(fields: [roomId], references: [id])
+  invoices  Invoice[]
+}
+
+// 4. Billing & Utilities
+model MeterReading {
+  id           Int      @id @default(autoincrement())
+  roomId       Int
+  month        Int
+  year         Int
+  waterReading Int // เลขมิเตอร์น้ำปัจจุบัน
+  elecReading  Int // เลขมิเตอร์ไฟปัจจุบัน
+  recordedAt   DateTime @default(now())
+  room         Room     @relation(fields: [roomId], references: [id])
+
+  @@unique([roomId, month, year]) // 1 ห้องจดได้เดือนละครั้ง
+}
+
+model Invoice {
+  id          String        @id @default(cuid())
+  contractId  String
+  month       Int
+  year        Int
+  totalAmount Decimal
+  status      InvoiceStatus @default(PENDING) // PENDING, PAID, OVERDUE, CANCELLED
+  issuedDate  DateTime      @default(now())
+  dueDate     DateTime
+  items       InvoiceItem[] // รายละเอียด (ค่าเช่า, ค่าน้ำ, ค่าไฟ)
+  receipt     Receipt?
+  contract    Contract      @relation(fields: [contractId], references: [id])
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model InvoiceItem {
+  id          Int     @id @default(autoincrement())
+  invoiceId   String
+  description String // เช่น "ค่าเช่าห้อง", "ค่าน้ำ (10 หน่วย)", "ค่าปรับ"
+  amount      Decimal
+  invoice     Invoice @relation(fields: [invoiceId], references: [id])
+}
+
+model Receipt {
+  id         String   @id @default(cuid())
+  invoiceId  String   @unique
+  paidDate   DateTime @default(now())
+  paidAmount Decimal
+  method     String // CASH, TRANSFER
+  invoice    Invoice  @relation(fields: [invoiceId], references: [id])
+}
