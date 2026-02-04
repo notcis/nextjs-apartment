@@ -31,7 +31,7 @@ COPY . .
  
 # Build Next.js app สำหรับ production
 # โดยจะใช้ output 'standalone' ที่กำหนดใน next.config.js
-RUN npm run build
+RUN NODE_OPTIONS="--max-old-space-size=2048" npm run build
  
 # Stage 3: Production Runner
 # ใช้ base image ที่เล็กที่สุดเท่าที่จะทำได้
@@ -45,7 +45,7 @@ ENV NODE_ENV=production
 # หากต้องการเปิดใช้งาน ให้เปลี่ยนเป็น ENV NEXT_TELEMETRY_DISABLED=1
 # และลบเครื่องหมาย # ออก
 # (แก้ไขตามคำเตือน "LegacyKeyValueFormat")
-ENV NEXT_TELEMETRY_DISABLED 1
+# ENV NEXT_TELEMETRY_DISABLED 1
 
 # สร้าง user และ group สำหรับรันแอปพลิเคชันเพื่อความปลอดภัย (run as non-root)
 RUN addgroup --system --gid 1001 nodejs
