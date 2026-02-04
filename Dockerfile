@@ -45,7 +45,7 @@ ENV NODE_ENV=production
 # หากต้องการเปิดใช้งาน ให้เปลี่ยนเป็น ENV NEXT_TELEMETRY_DISABLED=1
 # และลบเครื่องหมาย # ออก
 # (แก้ไขตามคำเตือน "LegacyKeyValueFormat")
-# ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED 1
 
 # สร้าง user และ group สำหรับรันแอปพลิเคชันเพื่อความปลอดภัย (run as non-root)
 RUN addgroup --system --gid 1001 nodejs
