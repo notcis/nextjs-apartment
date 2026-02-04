@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getRooms, getBranches, deleteRoom } from "@/actions/rooms.action";
 import { RoomDialog } from "./_components/room-dialog";
 import {

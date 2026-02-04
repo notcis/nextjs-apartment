@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getBranches, deleteBranch } from "@/actions/branches.action";
 import { BranchDialog } from "./_components/branch-dialog";
 import {

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getMeterData, getBranches } from "@/actions/utilities.action";
 import { MeterTable } from "./_components/meter-table";
 import {

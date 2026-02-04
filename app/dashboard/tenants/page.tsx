@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getTenants, deleteTenant } from "@/actions/tenants.action";
 import { TenantDialog } from "./_components/tenant-dialog";
 import {

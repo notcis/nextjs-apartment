@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getInvoices, updateInvoiceStatus } from "@/actions/invoices.action";
 import { GenerateDialog } from "./_components/generate-dialog";
 import {

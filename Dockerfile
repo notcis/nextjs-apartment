@@ -7,15 +7,6 @@ RUN apk add --no-cache libc6-compat openssl
  
 WORKDIR /app
 
-ARG DATABASE_URL
-ARG BETTER_AUTH_SECRET
-ARG DATABASE_USER
-ARG DATABASE_PASSWORD
-ARG DATABASE_NAME
-ARG DATABASE_HOST
-ARG DATABASE_PORT
-
- 
 # คัดลอกไฟล์ที่จำเป็นสำหรับการติดตั้ง dependencies
 COPY package.json package-lock.json ./
 # คัดลอก Prisma schema เพื่อให้ `prisma generate` ทำงานได้ตอน `npm ci`
@@ -34,11 +25,15 @@ WORKDIR /app
 
 ARG DATABASE_URL
 ARG BETTER_AUTH_SECRET
-ARG DATABASE_USERcat
+ARG DATABASE_USER
 ARG DATABASE_PASSWORD
 ARG DATABASE_NAME
 ARG DATABASE_HOST
 ARG DATABASE_PORT
+
+ENV NODE_ENV=production
+
+ENV NEXT_TELEMETRY_DISABLED=1
 
 ENV DATABASE_URL=$DATABASE_URL
 ENV BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET
@@ -47,7 +42,7 @@ ENV DATABASE_PASSWORD=$DATABASE_PASSWORD
 ENV DATABASE_NAME=$DATABASE_NAME
 ENV DATABASE_HOST=$DATABASE_HOST
 ENV DATABASE_PORT=$DATABASE_PORT
-ENV NEXT_TELEMETRY_DISABLED=1
+
  
 # คัดลอก node_modules ที่ติดตั้งแล้วจาก stage 'deps'
 COPY --from=deps /app/node_modules /app/node_modules
@@ -72,9 +67,6 @@ ENV NODE_ENV=production
 # และลบเครื่องหมาย # ออก
 # (แก้ไขตามคำเตือน "LegacyKeyValueFormat")
 # ENV NEXT_TELEMETRY_DISABLED 1
-
-
-
 
 # สร้าง user และ group สำหรับรันแอปพลิเคชันเพื่อความปลอดภัย (run as non-root)
 RUN addgroup --system --gid 1001 nodejs
