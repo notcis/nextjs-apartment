@@ -17,7 +17,7 @@ import {
   FileText,
   Menu,
   LogOut,
-  Contact2
+  Contact2,
 } from "lucide-react";
 
 // UI Components
@@ -56,7 +56,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       {/* Logo */}
       <div className="h-16 flex items-center px-6 border-b">
         <Building2 className="h-6 w-6 text-primary mr-2" />
-        <span className="font-bold text-lg">Awi Apartment</span>
+        <span className="font-bold text-lg">Mew Apartment</span>
       </div>
 
       {/* Nav Links */}

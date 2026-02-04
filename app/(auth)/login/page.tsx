@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react"; // 1. เพิ่ม useEffect
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client"; // path ที่สร้างไว้ในข้อ 1
+import { authClient } from "@/lib/auth-client";
 import { Building2, Loader2 } from "lucide-react";
 
-// Shadcn UI Components (สมมติว่า install แล้ว)
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,7 +26,13 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   const { data: session } = authClient.useSession();
-  if (session?.user.id) return router.push("/");
+
+  // 2. ย้าย Logic การ Redirect ไปไว้ใน useEffect
+  useEffect(() => {
+    if (session?.user?.id) {
+      router.push("/dashboard"); // ถ้ามี Session แล้ว ให้ดีดไป Dashboard
+    }
+  }, [session, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +48,7 @@ export default function LoginPage() {
         onSuccess: () => {
           // Login สำเร็จ -> ไปหน้า Dashboard
           router.push("/dashboard");
+          router.refresh(); // แนะนำให้ refresh เพื่อให้ Server Component โหลดข้อมูลผู้ใช้ใหม่
         },
         onError: (ctx) => {
           // Login พลาด -> แสดง Error
@@ -52,6 +58,11 @@ export default function LoginPage() {
       },
     );
   };
+
+  // ถ้ากำลัง Redirect (มี session แล้ว) ไม่ต้องแสดง Form เพื่อกันหน้ากระพริบ
+  if (session?.user?.id) {
+    return null;
+  }
 
   return (
     <div className="flex w-full min-h-screen items-center justify-center bg-gray-50 p-4">
@@ -92,10 +103,6 @@ export default function LoginPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">รหัสผ่าน</Label>
-                {/* ลิงก์ลืมรหัสผ่าน (ถ้ามี) */}
-                {/* <Link href="#" className="text-sm text-primary hover:underline">
-                  ลืมรหัสผ่าน?
-                </Link> */}
               </div>
               <Input
                 id="password"
