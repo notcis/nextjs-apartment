@@ -10,7 +10,7 @@ services:
     # ระบุให้ service นี้ใช้งาน network ชื่อ app-network
     networks:
       - app-network
-    image: notcis07/partment-app:1.0.0
+    image: notcis07/apartment-app:1.0.0
 
 # ประกาศ network ที่มีอยู่แล้ว (External Network)
 networks:
