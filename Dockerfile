@@ -6,6 +6,9 @@ FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat openssl
  
 WORKDIR /app
+
+ARG DATABASE_URL
+ARG BETTER_AUTH_SECRET
  
 # คัดลอกไฟล์ที่จำเป็นสำหรับการติดตั้ง dependencies
 COPY package.json package-lock.json ./
@@ -46,6 +49,10 @@ ENV NODE_ENV=production
 # และลบเครื่องหมาย # ออก
 # (แก้ไขตามคำเตือน "LegacyKeyValueFormat")
 # ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
+
+ENV DATABASE_URL=$DATABASE_URL
+ENV BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET
 
 # สร้าง user และ group สำหรับรันแอปพลิเคชันเพื่อความปลอดภัย (run as non-root)
 RUN addgroup --system --gid 1001 nodejs
