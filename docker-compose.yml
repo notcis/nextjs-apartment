@@ -4,9 +4,12 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        # ส่ง DATABASE_URL ไปยัง Dockerfile ในขั้นตอน build
         DATABASE_URL: ${DATABASE_URL}
-        # ส่ง BETTER_AUTH_SECRET ไปยัง Dockerfile ในขั้นตอน build
+        DATABASE_USER: ${DATABASE_USER}
+        DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+        DATABASE_NAME: ${DATABASE_NAME}
+        DATABASE_HOST: ${DATABASE_HOST}
+        DATABASE_PORT: ${DATABASE_PORT}
         BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
     container_name: apartment-app
     restart: always
