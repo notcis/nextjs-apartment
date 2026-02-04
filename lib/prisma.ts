@@ -2,6 +2,10 @@ import "dotenv/config";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "@prisma/client";
 
+const globalForPrisma = global as unknown as {
+  prisma: PrismaClient;
+};
+
 const adapter = new PrismaMariaDb({
   host: process.env.DATABASE_HOST,
   user: process.env.DATABASE_USER,
@@ -9,10 +13,6 @@ const adapter = new PrismaMariaDb({
   database: process.env.DATABASE_NAME,
   connectionLimit: 5,
 });
-
-const globalForPrisma = global as unknown as {
-  prisma: PrismaClient;
-};
 
 const prisma =
   globalForPrisma.prisma ||
