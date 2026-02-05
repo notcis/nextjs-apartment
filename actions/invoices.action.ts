@@ -135,7 +135,9 @@ export async function getInvoicesForPrint(
 ) {
   // สร้างเงื่อนไข Where
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const whereCondition: any = {};
+  const whereCondition: any = {
+    status: { not: "CANCELLED" },
+  };
 
   if (ids && ids.length > 0) {
     whereCondition.id = { in: ids };
@@ -190,6 +192,7 @@ export async function getInvoicesForPrint(
         items: inv.items.map((i) => ({ ...i, amount: i.amount.toNumber() })),
         contract: {
           ...inv.contract,
+          deposit: inv.contract.deposit.toNumber(),
           room: {
             ...inv.contract.room,
             price: inv.contract.room.price.toNumber(),

@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { TIMEOUT } from "dns";
 import { revalidatePath } from "next/cache";
 
 // ดึงข้อมูลห้องพร้อมเลขมิเตอร์ (เก่า/ใหม่)
@@ -75,36 +76,44 @@ type MeterInput = {
   elecReading: number;
 };
 
-// บันทึกข้อมูลทีละหลายรายการ (Bulk Upsert)
 export async function saveMeterReadings(
   data: MeterInput[],
   month: number,
   year: number,
 ) {
-  // ใช้ Transaction หรือ Promise.all เพื่อบันทึกรวดเดียว
+  // เปลี่ยนเป็น Interactive Transaction
   await prisma.$transaction(
-    data.map((item) =>
-      prisma.meterReading.upsert({
-        where: {
-          roomId_month_year: {
+    async (tx) => {
+      // ใช้ tx แทน prisma ด้านในนี้
+      const promises = data.map((item) =>
+        tx.meterReading.upsert({
+          where: {
+            roomId_month_year: {
+              roomId: item.roomId,
+              month: month,
+              year: year,
+            },
+          },
+          update: {
+            waterReading: item.waterReading,
+            elecReading: item.elecReading,
+          },
+          create: {
             roomId: item.roomId,
             month: month,
             year: year,
+            waterReading: item.waterReading,
+            elecReading: item.elecReading,
           },
-        },
-        update: {
-          waterReading: item.waterReading,
-          elecReading: item.elecReading,
-        },
-        create: {
-          roomId: item.roomId,
-          month: month,
-          year: year,
-          waterReading: item.waterReading,
-          elecReading: item.elecReading,
-        },
-      }),
-    ),
+        }),
+      );
+
+      // สั่งทำงานพร้อมกันทั้งหมด
+      await Promise.all(promises);
+    },
+    {
+      timeout: 20000, // ✅ แบบนี้ใส่ timeout ได้แล้ว (20 วินาที)
+    },
   );
 
   revalidatePath("/dashboard/utilities");

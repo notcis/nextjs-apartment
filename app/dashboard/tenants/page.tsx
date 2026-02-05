@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Trash2, Phone, MessageCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 export default async function TenantsPage() {
   const tenants = await getTenants();
@@ -97,6 +98,7 @@ export default async function TenantsPage() {
                       action={async () => {
                         "use server";
                         // ควรมีการแจ้งเตือน (Alert) ก่อนลบจริง
+
                         const res = await deleteTenant(tenant.id);
                         if (!res.success) {
                           // ใน Server Action แบบ Form ธรรมดาอาจจะ alert ยากหน่อย

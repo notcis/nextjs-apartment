@@ -8,7 +8,12 @@ export async function getTenants() {
     orderBy: { id: "desc" }, // ผู้เช่าใหม่สุดขึ้นก่อน
     include: {
       _count: {
-        select: { contracts: true }, // นับจำนวนสัญญาที่มี (เพื่อดูว่าใครยังเช่าอยู่)
+        select: {
+          contracts: {
+            where: { isActive: true },
+          },
+        },
+        // นับจำนวนสัญญาที่มี (เพื่อดูว่าใครยังเช่าอยู่)
       },
     },
   });
