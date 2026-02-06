@@ -122,20 +122,20 @@ export function MeterTable({
               <TableHead className="w-[100px]">ห้อง</TableHead>
               <TableHead className="w-[150px]">สาขา</TableHead>
 
-              {/* กลุ่มน้ำ */}
-              <TableHead className="text-center bg-blue-50/50 text-blue-700 border-l border-blue-100">
-                น้ำ (เก่า)
-              </TableHead>
-              <TableHead className="text-center bg-blue-50/50 text-blue-900 border-r border-blue-100 font-bold">
-                น้ำ (ใหม่)
-              </TableHead>
-
               {/* กลุ่มไฟ */}
               <TableHead className="text-center bg-yellow-50/50 text-yellow-700 border-l border-yellow-100">
                 ไฟ (เก่า)
               </TableHead>
               <TableHead className="text-center bg-yellow-50/50 text-yellow-900 border-r border-yellow-100 font-bold">
                 ไฟ (ใหม่)
+              </TableHead>
+
+              {/* กลุ่มน้ำ */}
+              <TableHead className="text-center bg-blue-50/50 text-blue-700 border-l border-blue-100">
+                น้ำ (เก่า)
+              </TableHead>
+              <TableHead className="text-center bg-blue-50/50 text-blue-900 border-r border-blue-100 font-bold">
+                น้ำ (ใหม่)
               </TableHead>
 
               <TableHead className="text-center w-[120px]">สถานะ</TableHead>
@@ -173,26 +173,6 @@ export function MeterTable({
                       {item.branchName}
                     </TableCell>
 
-                    {/* น้ำ */}
-                    <TableCell className="text-center text-muted-foreground border-l">
-                      {item.prevWater}
-                    </TableCell>
-                    <TableCell className="border-r p-2">
-                      <Input
-                        type="number"
-                        value={item.currentWater ?? ""}
-                        onChange={(e) =>
-                          handleInputChange(
-                            index,
-                            "currentWater",
-                            e.target.value,
-                          )
-                        }
-                        className={`text-center font-bold ${isWaterError ? "border-red-500 bg-red-50 text-red-700" : ""}`}
-                        placeholder={item.prevWater.toString()}
-                      />
-                    </TableCell>
-
                     {/* ไฟ */}
                     <TableCell className="text-center text-muted-foreground border-l">
                       {item.prevElec}
@@ -210,6 +190,26 @@ export function MeterTable({
                         }
                         className={`text-center font-bold ${isElecError ? "border-red-500 bg-red-50 text-red-700" : ""}`}
                         placeholder={item.prevElec.toString()}
+                      />
+                    </TableCell>
+
+                    {/* น้ำ */}
+                    <TableCell className="text-center text-muted-foreground border-l">
+                      {item.prevWater}
+                    </TableCell>
+                    <TableCell className="border-r p-2">
+                      <Input
+                        type="number"
+                        value={item.currentWater ?? ""}
+                        onChange={(e) =>
+                          handleInputChange(
+                            index,
+                            "currentWater",
+                            e.target.value,
+                          )
+                        }
+                        className={`text-center font-bold ${isWaterError ? "border-red-500 bg-red-50 text-red-700" : ""}`}
+                        placeholder={item.prevWater.toString()}
                       />
                     </TableCell>
 

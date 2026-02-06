@@ -13,7 +13,7 @@ export async function getInvoices(
     where: {
       month,
       year,
-      status: status ? status : undefined,
+      status: { not: "CANCELLED" },
     },
     include: {
       contract: {
@@ -62,6 +62,7 @@ export async function generateInvoices(month: number, year: number) {
         contractId: contract.id,
         month,
         year,
+        status: { not: "CANCELLED" },
       },
     });
     if (existing) continue;

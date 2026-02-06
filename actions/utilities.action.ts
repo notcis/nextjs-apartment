@@ -1,7 +1,6 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { TIMEOUT } from "dns";
 import { revalidatePath } from "next/cache";
 
 // ดึงข้อมูลห้องพร้อมเลขมิเตอร์ (เก่า/ใหม่)
