@@ -111,7 +111,7 @@ export async function saveMeterReadings(
       await Promise.all(promises);
     },
     {
-      timeout: 20000, // ✅ แบบนี้ใส่ timeout ได้แล้ว (20 วินาที)
+      timeout: 60000, // ✅ แบบนี้ใส่ timeout ได้แล้ว (20 วินาที)
     },
   );
 
